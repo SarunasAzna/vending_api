@@ -9,7 +9,11 @@ from flask_jwt_extended import (
 
 from vending_api.models import User
 from vending_api.extensions import pwd_context, jwt, apispec
-from vending_api.auth.helpers import revoke_token, is_token_revoked, add_token_to_database
+from vending_api.auth.helpers import (
+    revoke_token,
+    is_token_revoked,
+    add_token_to_database,
+)
 
 
 blueprint = Blueprint("auth", __name__, url_prefix="/auth")
