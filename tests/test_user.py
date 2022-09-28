@@ -14,7 +14,7 @@ def test_get_user(client, db, user, admin_headers):
     db.session.commit()
 
     # test get_user
-    user_url = url_for("api.uer_by_id", user_id=user.id)
+    user_url = url_for("api.user_by_id", user_id=user.id)
     rep = client.get(user_url, headers=admin_headers)
     assert rep.status_code == 200
 
