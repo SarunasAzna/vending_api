@@ -1,5 +1,6 @@
-from vending_api.extensions import db
 from sqlalchemy.orm import validates
+
+from vending_api.extensions import db
 
 
 class Product(db.Model):

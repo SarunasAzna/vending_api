@@ -1,8 +1,8 @@
-from flask import jsonify, render_template, Blueprint
 from apispec import APISpec
 from apispec.exceptions import APISpecError
 from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec_webframeworks.flask import FlaskPlugin
+from flask import Blueprint, jsonify, render_template
 
 
 class FlaskRestfulPlugin(FlaskPlugin):

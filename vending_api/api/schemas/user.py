@@ -1,5 +1,5 @@
+from vending_api.extensions import db, ma
 from vending_api.models import User
-from vending_api.extensions import ma, db
 
 
 class UserSchema(ma.SQLAlchemyAutoSchema):

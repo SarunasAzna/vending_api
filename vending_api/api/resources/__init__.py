@@ -1,4 +1,3 @@
-from vending_api.api.resources.user import UserResource, UserList
-
+from vending_api.api.resources.user import UserList, UserResource
 
 __all__ = ["UserResource", "UserList"]

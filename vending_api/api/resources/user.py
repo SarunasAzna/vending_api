@@ -1,10 +1,11 @@
 from flask import request
-from flask_restful import Resource
 from flask_jwt_extended import jwt_required
+from flask_restful import Resource
+
 from vending_api.api.schemas import UserSchema
-from vending_api.models import User
-from vending_api.extensions import db
 from vending_api.commons.pagination import paginate
+from vending_api.extensions import db
+from vending_api.models import User
 
 
 class UserResource(Resource):

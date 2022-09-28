@@ -1,10 +1,10 @@
 from flask import Blueprint, current_app, jsonify
 from flask_restful import Api
 from marshmallow import ValidationError
-from vending_api.extensions import apispec
-from vending_api.api.resources import UserResource, UserList
-from vending_api.api.schemas import UserSchema
 
+from vending_api.api.resources import UserList, UserResource
+from vending_api.api.schemas import UserSchema
+from vending_api.extensions import apispec
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 api = Api(blueprint)

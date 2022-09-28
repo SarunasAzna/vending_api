@@ -1,6 +1,13 @@
+import enum
+
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from vending_api.extensions import db, pwd_context
+
+
+class RoleEnum(enum.Enum):
+    buyer = "buyer"
+    seller = "seller"
 
 
 class User(db.Model):
@@ -8,9 +15,10 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(80), unique=True, nullable=False)
     _password = db.Column("password", db.String(255), nullable=False)
     active = db.Column(db.Boolean, default=True)
+    deposit = db.Column(db.Integer, default=0)
+    role = db.Column(db.Enum(RoleEnum))
 
     @hybrid_property
     def password(self):

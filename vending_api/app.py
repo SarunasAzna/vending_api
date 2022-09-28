@@ -1,11 +1,7 @@
 from flask import Flask
-from vending_api import api
-from vending_api import auth
-from vending_api import manage
-from vending_api.extensions import apispec
-from vending_api.extensions import db
-from vending_api.extensions import jwt
-from vending_api.extensions import migrate
+
+from vending_api import api, auth, manage
+from vending_api.extensions import apispec, db, jwt, migrate
 
 
 def create_app(testing=False):
