@@ -153,8 +153,7 @@ class UserList(Resource):
                   user: UserSchema
     """
 
-    method_decorators = [jwt_required()]
-
+    @jwt_required
     def get(self):
         schema = UserSchema(many=True)
         query = User.query

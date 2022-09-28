@@ -14,13 +14,14 @@ def test_get_user(client, db, user, admin_headers):
     db.session.commit()
 
     # test get_user
-    user_url = url_for("api.user_by_id", user_id=user.id)
+    user_url = url_for("api.uer_by_id", user_id=user.id)
     rep = client.get(user_url, headers=admin_headers)
     assert rep.status_code == 200
 
     data = rep.get_json()["user"]
     assert data["username"] == user.username
     assert data["active"] == user.active
+    assert data["role"] == "buyer"
 
 
 def test_put_user(client, db, user, admin_headers):
@@ -64,6 +65,17 @@ def test_delete_user(client, db, user, admin_headers):
     assert db.session.query(User).filter_by(id=user.id).first() is None
 
 
+def test_allow_unauthenticated_user_creation(client, db):
+    data = {"username": "Sir TestAlot", "password": "much secure", "role": "buyer"}
+    users_url = url_for("api.users")
+    resp = client.post(users_url, json=data)
+    assert resp.status_code == 201
+    resp_data = resp.get_json()
+    user = db.session.query(User).filter_by(id=resp_data["user"]["id"]).first()
+
+    assert user.username == data["username"]
+
+
 def test_create_user(client, db, admin_headers):
     # test bad data
     users_url = url_for("api.users")
@@ -72,6 +84,7 @@ def test_create_user(client, db, admin_headers):
     assert rep.status_code == 400
 
     data["password"] = "admin"
+    data["role"] = "buyer"
 
     rep = client.post(users_url, json=data, headers=admin_headers)
     assert rep.status_code == 201
