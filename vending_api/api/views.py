@@ -10,8 +10,8 @@ blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 api = Api(blueprint)
 
 
-api.add_resource(UserResource, "/users/<int:user_id>", endpoint="user_by_id")
-api.add_resource(UserList, "/users", endpoint="users")
+api.add_resource(UserResource, "/user/<int:user_id>", endpoint="user_by_id")
+api.add_resource(UserList, "/user", endpoint="users")
 
 
 @blueprint.before_app_first_request
