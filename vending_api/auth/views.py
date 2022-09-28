@@ -1,11 +1,19 @@
 from flask import Blueprint
 from flask import current_app as app
 from flask import jsonify, request
-from flask_jwt_extended import (create_access_token, create_refresh_token,
-                                get_jwt, get_jwt_identity, jwt_required)
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    get_jwt,
+    get_jwt_identity,
+    jwt_required,
+)
 
-from vending_api.auth.helpers import (add_token_to_database, is_token_revoked,
-                                      revoke_token)
+from vending_api.auth.helpers import (
+    add_token_to_database,
+    is_token_revoked,
+    revoke_token,
+)
 from vending_api.extensions import apispec, jwt, pwd_context
 from vending_api.models import User
 

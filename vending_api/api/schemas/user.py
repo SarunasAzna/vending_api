@@ -14,4 +14,3 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         sqla_session = db.session
         load_instance = True
         exclude = ("_password",)
-
