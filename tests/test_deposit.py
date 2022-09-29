@@ -17,3 +17,13 @@ def test_deposit(coins, client, db, buyer_user, buyer_headers):
         db.session.refresh(buyer_user)
         assert buyer_user.deposit == expected_amount
 
+
+@pytest.mark.parametrize("coin, explanation", [
+    [-1, "Negative coin"],
+])
+def test_false_amount(coin, explanation, client, db, buyer_user, buyer_headers):
+    user_url = url_for("api.deposit")
+    db.session.refresh(buyer_user)
+    rep = client.post(user_url, json={"coin": coin}, headers=buyer_headers)
+    assert rep.status_code == 400
+

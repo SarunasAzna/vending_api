@@ -16,7 +16,6 @@ class Product(db.Model):
         return (
             f"{self.productName}, available: {self.amountAvailable}, cost: {self.cost}"
         )
-        return "<User %s>" % self.username
 
     @validates("cost")
     def validate_cost(self, key, cost):

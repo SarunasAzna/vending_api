@@ -1,6 +1,7 @@
 import enum
 
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import validates
 
 from vending_api.extensions import db, pwd_context
 
@@ -9,6 +10,8 @@ class RoleEnum(enum.Enum):
     buyer = "buyer"
     seller = "seller"
 
+
+ALLOWED_COINS = [5, 10, 20, 50, 100]
 
 class User(db.Model):
     """Basic user model"""
@@ -31,6 +34,16 @@ class User(db.Model):
     def __repr__(self):
         return "<User %s>" % self.username
 
+    @validates("deposit")
+    def validate_cost(self, key, deposit):
+        if deposit <= 0:
+            raise ValueError("Cost must be a positive amount")
+        if deposit % 5 != 0:
+            raise ValueError("Cost must be a multiple of 5")
+        return deposit
+
     def deposit_coin(self, coin):
+        if coin not in ALLOWED_COINS:
+            raise ValueError(f"Only coins {ALLOWED_COINS} are allowed")
         self.deposit += coin
 
