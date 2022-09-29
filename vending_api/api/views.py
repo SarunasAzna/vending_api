@@ -3,7 +3,7 @@ from flask_restful import Api
 from marshmallow import ValidationError
 
 from vending_api.api.resources import UserList, UserResource, ProductResource
-from vending_api.api.schemas import UserSchema
+from vending_api.api.schemas import UserSchema, ProductSchema
 from vending_api.extensions import apispec
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
@@ -19,6 +19,9 @@ def register_views():
     apispec.spec.components.schema("UserSchema", schema=UserSchema)
     apispec.spec.path(view=UserResource, app=current_app)
     apispec.spec.path(view=UserList, app=current_app)
+    apispec.spec.components.schema("ProductSchema", schema=ProductSchema)
+    apispec.spec.path(view=ProductResource, app=current_app)
+    #apispec.spec.path(view=UserList, app=current_app)
 
 
 @blueprint.errorhandler(ValidationError)

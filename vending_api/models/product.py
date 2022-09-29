@@ -9,7 +9,7 @@ class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     amountAvailable = db.Column(db.Integer, nullable=False, default=0)
     productName = db.Column(db.String(100), unique=True, nullable=False)
-    cost = db.Column(db.Integer, nullable=False, default=0)
+    cost = db.Column(db.Integer, nullable=False, default=5)
 
     def __repr__(self):
         return (
