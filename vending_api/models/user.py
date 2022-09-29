@@ -35,17 +35,22 @@ class User(db.Model):
         return "<User %s>" % self.username
 
     @validates("deposit")
-    def validate_cost(self, key, deposit):
-        if deposit <= 0:
-            raise ValueError("Cost must be a positive amount")
+    def validate_deposit(self, key, deposit):
+        if deposit < 0:
+            raise ValueError("Deposit must be greater than 0")
         if deposit % 5 != 0:
-            raise ValueError("Cost must be a multiple of 5")
+            raise ValueError("Deposit must be a multiple of 5")
         return deposit
 
     def deposit_coin(self, coin):
         if self.role != RoleEnum.buyer:
-            raise PermissionError(f"Only buyer can deposit coins")
+            raise PermissionError("Only buyer can deposit coins")
         if coin not in ALLOWED_COINS:
             raise ValueError(f"Only coins {ALLOWED_COINS} are allowed")
         self.deposit += coin
+
+    def reset(self):
+        if self.role != RoleEnum.buyer:
+            raise PermissionError("Only buyer can deposit coins")
+        self.deposit = 0
 
