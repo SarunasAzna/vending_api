@@ -96,6 +96,8 @@ class UserResource(Resource):
         user = User.query.get_or_404(user_id)
         if "deposit" in request.json:
             abort(400, "deposit cannot be updated with this action")
+        if "role" in request.json:
+            abort(400, "Role cannot be changed")
         user = schema.load(request.json, instance=user)
 
         db.session.commit()
