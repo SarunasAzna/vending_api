@@ -79,6 +79,18 @@ def test_create_product(client, db, seller_headers):
 
     assert product.productName == "sup"
 
+@pytest.mark.parametrize("cost, amount_available, explanation", [
+    [0, 10, "cost is zero"],
+    [-5, 10, "cost is negative"],
+    [6, 10, "cost is non multiple by 5"],
+    [5, -1, "amountAvailable is negative"],
+])
+def test_create_bad_amounts(cost, amount_available, explanation, client, db, seller_headers):
+    products_url = url_for("api.product")
+    data = {"productName": f"{cost}{amount_available}", "cost": cost, "amountAvailable": amount_available}
+    rep = client.post(products_url, json=data, headers=seller_headers)
+    assert rep.status_code == 400, f"Bad response code: {rep.status_code} on case: {explanation}"
+
 
 @pytest.mark.parametrize("url, method, validate_owner", [
     ["api.product_by_id", "put", True],

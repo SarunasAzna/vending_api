@@ -20,8 +20,14 @@ class Product(db.Model):
 
     @validates("cost")
     def validate_cost(self, key, cost):
-        if cost == 0:
-            raise ValueError("Cost cannot be 0")
+        if cost <= 0:
+            raise ValueError("Cost must be a positive amount")
         if cost % 5 != 0:
             raise ValueError("Cost must be a multiple of 5")
         return cost
+
+    @validates("amountAvailable")
+    def validate_amount_available(self, key, amount_available):
+        if amount_available < 0:
+            raise ValueError("amountAvailable cannot be negative")
+        return amount_available

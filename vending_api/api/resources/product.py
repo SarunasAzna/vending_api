@@ -25,6 +25,14 @@ def _validate_user_is_seller():
               description="User bust be a seller to be able to edit products")
 
 
+def _load_product(schema, *args, **kwargs):
+    try:
+        product = schema.load(*args, **kwargs)
+    except ValueError as e:
+        abort(400, str(e))
+    return product
+
+
 class ProductResource(Resource):
     """Single object resource
 
@@ -114,7 +122,7 @@ class ProductResource(Resource):
         product = Product.query.get_or_404(product_id)
         _validate_user_is_owner(product)
         schema = ProductSchema(partial=True)
-        product = schema.load(request.json, instance=product)
+        product = _load_product(schema, request.json, instance=product)
 
         db.session.commit()
 
@@ -185,9 +193,8 @@ class ProductList(Resource):
     def post(self):
         schema = ProductSchema()
         _validate_user_is_seller()
-        product = schema.load(request.json)
+        product = _load_product(schema, request.json)
         product.user_id = get_jwt_identity()
-
         db.session.add(product)
         db.session.commit()
 
