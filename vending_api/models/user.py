@@ -30,3 +30,7 @@ class User(db.Model):
 
     def __repr__(self):
         return "<User %s>" % self.username
+
+    def deposit_coin(self, coin):
+        self.deposit += coin
+
