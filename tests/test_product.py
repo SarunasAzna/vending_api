@@ -14,12 +14,12 @@ def test_get_product(client, db, product, seller_headers, buyer_headers):
     # test get_product
     product_url = url_for("api.product_by_id", product_id=product.id)
     rep = client.get(product_url, headers=seller_headers)
-    #rep_buyer = client.get(product_url, headers=buyer_headers)
+    rep_buyer = client.get(product_url, headers=buyer_headers)
     assert rep.status_code == 200
 
     data = rep.get_json()["product"]
-    #data_buyer = rep_buyer.get_json()["product"]
-    #assert data_buyer == data
+    data_buyer = rep_buyer.get_json()["product"]
+    assert data_buyer == data
     assert data["productName"] == product.productName
 
 
