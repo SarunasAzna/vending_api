@@ -34,8 +34,8 @@ def db(app):
 
 
 @pytest.fixture
-def admin_user(db):
-    user = User(username="admin", password="admin", role="seller")
+def seller_user(db):
+    user = User(username="seller", password="seller", role="seller")
 
     db.session.add(user)
     db.session.commit()
@@ -44,8 +44,33 @@ def admin_user(db):
 
 
 @pytest.fixture
-def admin_headers(admin_user, client):
-    data = {"username": admin_user.username, "password": "admin"}
+def buyer_user(db):
+    user = User(username="buyer", password="buyer", role="buyer")
+
+    db.session.add(user)
+    db.session.commit()
+
+    return user
+
+
+@pytest.fixture
+def seller_headers(seller_user, client):
+    data = {"username": seller_user.username, "password": "seller"}
+    rep = client.post(
+        "/auth/login",
+        data=json.dumps(data),
+        headers={"content-type": "application/json"},
+    )
+
+    tokens = json.loads(rep.get_data(as_text=True))
+    return {
+        "content-type": "application/json",
+        "authorization": "Bearer %s" % tokens["access_token"],
+    }
+
+@pytest.fixture
+def buyer_headers(buyer_user, client):
+    data = {"username": buyer_user.username, "password": "buyer"}
     rep = client.post(
         "/auth/login",
         data=json.dumps(data),
@@ -60,8 +85,8 @@ def admin_headers(admin_user, client):
 
 
 @pytest.fixture
-def admin_refresh_headers(admin_user, client):
-    data = {"username": admin_user.username, "password": "admin"}
+def seller_refresh_headers(seller_user, client):
+    data = {"username": seller_user.username, "password": "seller"}
     rep = client.post(
         "/auth/login",
         data=json.dumps(data),

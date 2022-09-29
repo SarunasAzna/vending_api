@@ -18,6 +18,7 @@ class ProductFactory(factory.Factory):
     productName = factory.Sequence(lambda n: "product%d" % n)
     amountAvailable = 10
     cost = 50
+    user_id = 1
 
     class Meta:
         model = Product

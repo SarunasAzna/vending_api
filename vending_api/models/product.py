@@ -10,6 +10,7 @@ class Product(db.Model):
     amountAvailable = db.Column(db.Integer, nullable=False, default=0)
     productName = db.Column(db.String(100), unique=True, nullable=False)
     cost = db.Column(db.Integer, nullable=False, default=5)
+    user_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
 
     def __repr__(self):
         return (

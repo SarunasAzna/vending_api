@@ -4,10 +4,10 @@ from vending_api.extensions import pwd_context
 from vending_api.models import User
 
 
-def test_get_user(client, db, user, admin_headers):
+def test_get_user(client, db, user, seller_headers):
     # test 404
     user_url = url_for("api.user_by_id", user_id="100000")
-    rep = client.get(user_url, headers=admin_headers)
+    rep = client.get(user_url, headers=seller_headers)
     assert rep.status_code == 404
 
     db.session.add(user)
@@ -15,7 +15,7 @@ def test_get_user(client, db, user, admin_headers):
 
     # test get_user
     user_url = url_for("api.user_by_id", user_id=user.id)
-    rep = client.get(user_url, headers=admin_headers)
+    rep = client.get(user_url, headers=seller_headers)
     assert rep.status_code == 200
 
     data = rep.get_json()["user"]
@@ -24,10 +24,10 @@ def test_get_user(client, db, user, admin_headers):
     assert data["role"] == "buyer"
 
 
-def test_put_user(client, db, user, admin_headers):
+def test_put_user(client, db, user, seller_headers):
     # test 404
     user_url = url_for("api.user_by_id", user_id="100000")
-    rep = client.put(user_url, headers=admin_headers)
+    rep = client.put(user_url, headers=seller_headers)
     assert rep.status_code == 404
 
     db.session.add(user)
@@ -37,7 +37,7 @@ def test_put_user(client, db, user, admin_headers):
 
     user_url = url_for("api.user_by_id", user_id=user.id)
     # test update user
-    rep = client.put(user_url, json=data, headers=admin_headers)
+    rep = client.put(user_url, json=data, headers=seller_headers)
     assert rep.status_code == 200
 
     data = rep.get_json()["user"]
@@ -48,10 +48,10 @@ def test_put_user(client, db, user, admin_headers):
     assert pwd_context.verify("new_password", user.password)
 
 
-def test_delete_user(client, db, user, admin_headers):
+def test_delete_user(client, db, user, seller_headers):
     # test 404
     user_url = url_for("api.user_by_id", user_id="100000")
-    rep = client.delete(user_url, headers=admin_headers)
+    rep = client.delete(user_url, headers=seller_headers)
     assert rep.status_code == 404
 
     db.session.add(user)
@@ -60,7 +60,7 @@ def test_delete_user(client, db, user, admin_headers):
     # test get_user
 
     user_url = url_for("api.user_by_id", user_id=user.id)
-    rep = client.delete(user_url, headers=admin_headers)
+    rep = client.delete(user_url, headers=seller_headers)
     assert rep.status_code == 200
     assert db.session.query(User).filter_by(id=user.id).first() is None
 
@@ -76,17 +76,17 @@ def test_allow_unauthenticated_user_creation(client, db):
     assert user.username == data["username"]
 
 
-def test_create_user(client, db, admin_headers):
+def test_create_user(client, db, seller_headers):
     # test bad data
     users_url = url_for("api.users")
     data = {"username": "created"}
-    rep = client.post(users_url, json=data, headers=admin_headers)
+    rep = client.post(users_url, json=data, headers=seller_headers)
     assert rep.status_code == 400
 
     data["password"] = "admin"
     data["role"] = "buyer"
 
-    rep = client.post(users_url, json=data, headers=admin_headers)
+    rep = client.post(users_url, json=data, headers=seller_headers)
     assert rep.status_code == 201
 
     data = rep.get_json()
@@ -95,14 +95,14 @@ def test_create_user(client, db, admin_headers):
     assert user.username == "created"
 
 
-def test_get_all_user(client, db, user_factory, admin_headers):
+def test_get_all_user(client, db, user_factory, seller_headers):
     users_url = url_for("api.users")
     users = user_factory.create_batch(30)
 
     db.session.add_all(users)
     db.session.commit()
 
-    rep = client.get(users_url, headers=admin_headers)
+    rep = client.get(users_url, headers=seller_headers)
     assert rep.status_code == 200
 
     results = rep.get_json()
