@@ -121,7 +121,9 @@ class ProductResource(Resource):
         return {"msg": "product updated", "product": schema.dump(product)}
 
     def delete(self, product_id):
+        _validate_user_is_seller()
         product = Product.query.get_or_404(product_id)
+        _validate_user_is_owner(product)
         db.session.delete(product)
         db.session.commit()
 
