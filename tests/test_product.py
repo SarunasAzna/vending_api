@@ -61,11 +61,31 @@ def test_delete_product(client, db, product, seller_headers):
     assert rep.status_code == 200
     assert db.session.query(Product).filter_by(id=product.id).first() is None
 
-@pytest.mark.parametrize("url, method", [
-    ["api.product_by_id", "put"],
-    ["api.product_by_id", "delete"],
+
+def test_create_product(client, db, seller_headers):
+    # test bad data
+    products_url = url_for("api.product")
+    data = {}
+    rep = client.post(products_url, json=data, headers=seller_headers)
+    assert rep.status_code == 400
+
+    data = {"productName": "sup", "cost": 5, "amountAvailable": 15}
+
+    rep = client.post(products_url, json=data, headers=seller_headers)
+    assert rep.status_code == 201
+
+    data = rep.get_json()
+    product = db.session.query(Product).filter_by(id=data["product"]["id"]).first()
+
+    assert product.productName == "sup"
+
+
+@pytest.mark.parametrize("url, method, validate_owner", [
+    ["api.product_by_id", "put", True],
+    ["api.product_by_id", "delete", True],
+    ["api.product", "post", False],
 ])
-def test_not_owner(url, method, client, db, product, seller_headers, buyer_headers):
+def test_not_owner(url, method, validate_owner, client, db, product, seller_headers, buyer_headers):
     db.session.add(product)
     db.session.commit()
     # test 401
@@ -76,10 +96,11 @@ def test_not_owner(url, method, client, db, product, seller_headers, buyer_heade
     product_url = url_for(url, product_id="100000")
     rep = getattr(client, method)(product_url, headers=buyer_headers)
     assert rep.status_code == 403
-    # test 403 not owner
-    product.user_id = 2
-    db.session.commit()
-    product_url = url_for(url, product_id=product.id)
-    rep = getattr(client, method)(product_url, headers=seller_headers)
-    assert rep.status_code == 403
+    if validate_owner:
+        # test 403 not owner
+        product.user_id = 2
+        db.session.commit()
+        product_url = url_for(url, product_id=product.id)
+        rep = getattr(client, method)(product_url, headers=seller_headers)
+        assert rep.status_code == 403
 

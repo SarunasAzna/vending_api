@@ -130,62 +130,65 @@ class ProductResource(Resource):
         return {"msg": "product deleted"}
 
 
-#class UserList(Resource):
-#    """Creation and get_all
-#
-#    ---
-#    get:
-#      tags:
-#        - api
-#      summary: Get a list of users
-#      description: Get a list of paginated users
-#      responses:
-#        200:
-#          content:
-#            application/json:
-#              schema:
-#                allOf:
-#                  - $ref: '#/components/schemas/PaginatedResult'
-#                  - type: object
-#                    properties:
-#                      results:
-#                        type: array
-#                        items:
-#                          $ref: '#/components/schemas/UserSchema'
-#    post:
-#      tags:
-#        - api
-#      summary: Create a user
-#      description: Create a new user
-#      requestBody:
-#        content:
-#          application/json:
-#            schema:
-#              UserSchema
-#      responses:
-#        201:
-#          content:
-#            application/json:
-#              schema:
-#                type: object
-#                properties:
-#                  msg:
-#                    type: string
-#                    example: user created
-#                  user: UserSchema
-#    """
-#
-#    @jwt_required()
-#    def get(self):
-#        schema = UserSchema(many=True)
-#        query = User.query
-#        return paginate(query, schema)
-#
-#    def post(self):
-#        schema = UserSchema()
-#        user = schema.load(request.json)
-#
-#        db.session.add(user)
-#        db.session.commit()
-#
-#        return {"msg": "user created", "user": schema.dump(user)}, 201
+class ProductList(Resource):
+    """Creation and get_all
+
+    ---
+    get:
+      tags:
+        - api
+      summary: Get a list of products
+      description: Get a list of paginated products
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResult'
+                  - type: object
+                    properties:
+                      results:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ProductSchema'
+    post:
+      tags:
+        - api
+      summary: Create a product
+      description: Create a new product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              ProductSchema
+      responses:
+        201:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: product created
+                  product: ProductSchema
+    """
+
+    @jwt_required()
+    def get(self):
+        schema = ProductSchema(many=True)
+        query = Product.query
+        return paginate(query, schema)
+
+    @jwt_required()
+    def post(self):
+        schema = ProductSchema()
+        _validate_user_is_seller()
+        product = schema.load(request.json)
+        product.user_id = get_jwt_identity()
+
+        db.session.add(product)
+        db.session.commit()
+
+        return {"msg": "product created", "product": schema.dump(product)}, 201

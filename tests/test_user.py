@@ -67,7 +67,7 @@ def test_delete_user(client, db, user, seller_headers):
 
 def test_allow_unauthenticated_user_creation(client, db):
     data = {"username": "Sir TestAlot", "password": "much secure", "role": "buyer"}
-    users_url = url_for("api.users")
+    users_url = url_for("api.user")
     resp = client.post(users_url, json=data)
     assert resp.status_code == 201
     resp_data = resp.get_json()
@@ -78,7 +78,7 @@ def test_allow_unauthenticated_user_creation(client, db):
 
 def test_create_user(client, db, seller_headers):
     # test bad data
-    users_url = url_for("api.users")
+    users_url = url_for("api.user")
     data = {"username": "created"}
     rep = client.post(users_url, json=data, headers=seller_headers)
     assert rep.status_code == 400
@@ -96,7 +96,7 @@ def test_create_user(client, db, seller_headers):
 
 
 def test_get_all_user(client, db, user_factory, seller_headers):
-    users_url = url_for("api.users")
+    users_url = url_for("api.user")
     users = user_factory.create_batch(30)
 
     db.session.add_all(users)
