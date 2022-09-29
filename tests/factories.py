@@ -1,6 +1,6 @@
 import factory
 
-from vending_api.models import User
+from vending_api.models import User, Product
 
 
 class UserFactory(factory.Factory):
@@ -11,3 +11,13 @@ class UserFactory(factory.Factory):
 
     class Meta:
         model = User
+
+
+class ProductFactory(factory.Factory):
+
+    productName = factory.Sequence(lambda n: "product%d" % n)
+    amountAvailable = 10
+    cost = 50
+
+    class Meta:
+        model = Product

@@ -4,12 +4,13 @@ import pytest
 from dotenv import load_dotenv
 from pytest_factoryboy import register
 
-from tests.factories import UserFactory
+from tests.factories import UserFactory, ProductFactory
 from vending_api.app import create_app
 from vending_api.extensions import db as _db
 from vending_api.models import User
 
 register(UserFactory)
+register(ProductFactory)
 
 
 @pytest.fixture(scope="session")

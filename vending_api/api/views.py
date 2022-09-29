@@ -2,7 +2,7 @@ from flask import Blueprint, current_app, jsonify
 from flask_restful import Api
 from marshmallow import ValidationError
 
-from vending_api.api.resources import UserList, UserResource
+from vending_api.api.resources import UserList, UserResource, ProductResource
 from vending_api.api.schemas import UserSchema
 from vending_api.extensions import apispec
 
@@ -12,7 +12,7 @@ api = Api(blueprint)
 
 api.add_resource(UserResource, "/user/<int:user_id>", endpoint="user_by_id")
 api.add_resource(UserList, "/user", endpoint="users")
-
+api.add_resource(ProductResource, "/product/<int:product_id>", endpoint="product_by_id")
 
 @blueprint.before_app_first_request
 def register_views():

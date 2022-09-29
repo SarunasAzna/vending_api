@@ -11,7 +11,7 @@ def init():
 
     click.echo("create user")
     user = User(
-        username="admin", email="admin@vending.nonsense", password="admin", active=True
+        username="admin", password="admin", active=True, role="seller"
     )
     db.session.add(user)
     db.session.commit()
