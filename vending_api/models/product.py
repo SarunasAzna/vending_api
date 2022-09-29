@@ -1,6 +1,7 @@
 from sqlalchemy.orm import validates
 
 from vending_api.extensions import db
+from vending_api.models.user import ALLOWED_COINS
 
 
 class Product(db.Model):
@@ -30,3 +31,24 @@ class Product(db.Model):
         if amount_available < 0:
             raise ValueError("amountAvailable cannot be negative")
         return amount_available
+
+    def buy(self, amount, buyer):
+        total_cost = self.cost * amount
+        self.amountAvailable -= amount
+        change_amount = buyer.deposit - total_cost
+        buyer.deposit = 0
+        return self.give_change(change_amount)
+
+    @staticmethod
+    def give_change(change_amount):
+        ALLOWED_COINS.sort(reverse=True)
+        change = []
+        for coin in ALLOWED_COINS:
+            coint_amount = change_amount // coin
+            change.extend([coin]*coint_amount)
+            change_amount -= coin * coint_amount
+            if change_amount <= 0:
+                break
+        return change
+
+
