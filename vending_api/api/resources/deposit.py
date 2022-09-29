@@ -23,6 +23,8 @@ class DepositResource(Resource):
             user.deposit_coin(request.json["coin"])
         except ValueError as e:
             abort(400, str(e))
+        except PermissionError as e:
+            abort(403, str(e))
         db.session.commit()
         return {}
 

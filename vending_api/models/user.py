@@ -43,6 +43,8 @@ class User(db.Model):
         return deposit
 
     def deposit_coin(self, coin):
+        if self.role != RoleEnum.buyer:
+            raise PermissionError(f"Only buyer can deposit coins")
         if coin not in ALLOWED_COINS:
             raise ValueError(f"Only coins {ALLOWED_COINS} are allowed")
         self.deposit += coin
