@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, abort
 from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
@@ -94,6 +94,8 @@ class UserResource(Resource):
     def put(self, user_id):
         schema = UserSchema(partial=True)
         user = User.query.get_or_404(user_id)
+        if "deposit" in request.json:
+            abort(400, "deposit cannot be updated with this action")
         user = schema.load(request.json, instance=user)
 
         db.session.commit()
@@ -161,6 +163,8 @@ class UserList(Resource):
 
     def post(self):
         schema = UserSchema()
+        if "deposit" in request.json:
+            abort(400, "deposit cannot be updated with this action")
         user = schema.load(request.json)
 
         db.session.add(user)
