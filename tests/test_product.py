@@ -116,3 +116,17 @@ def test_not_owner(url, method, validate_owner, client, db, product, seller_head
         rep = getattr(client, method)(product_url, headers=seller_headers)
         assert rep.status_code == 403
 
+def test_get_all_product(client, db, product_factory, seller_headers):
+    products_url = url_for("api.product")
+    products = product_factory.create_batch(30)
+
+    db.session.add_all(products)
+    db.session.commit()
+
+    rep = client.get(products_url, headers=seller_headers)
+    assert rep.status_code == 200
+
+    results = rep.get_json()
+    for product in products:
+        assert any(u["id"] == product.id for u in results["results"])
+

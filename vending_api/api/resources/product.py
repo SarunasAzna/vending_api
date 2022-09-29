@@ -7,6 +7,7 @@ from vending_api.extensions import db
 from vending_api.models import Product, User
 from vending_api.models.user import RoleEnum
 from flask_jwt_extended import get_jwt_identity
+from vending_api.commons.pagination import paginate
 
 
 def _validate_user_is_owner(product):
@@ -182,14 +183,13 @@ class ProductList(Resource):
                     example: product created
                   product: ProductSchema
     """
+    method_decorators = [jwt_required()]
 
-    @jwt_required()
     def get(self):
         schema = ProductSchema(many=True)
         query = Product.query
         return paginate(query, schema)
 
-    @jwt_required()
     def post(self):
         schema = ProductSchema()
         _validate_user_is_seller()
