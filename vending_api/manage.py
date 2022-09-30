@@ -7,10 +7,18 @@ from flask.cli import with_appcontext
 def init():
     """Create a new admin user"""
     from vending_api.extensions import db
-    from vending_api.models import User
+    from vending_api.models import Product, User
 
-    click.echo("create user")
-    user = User(username="admin", password="adminadmin", active=True, role="seller")
-    db.session.add(user)
+    for name in ["buyer", "seller"]:
+        click.echo(f"create {name} user")
+        user = User(username=name, password=f"{name}12345", role=name)
+        db.session.add(user)
+    for product in [
+        {"productName": "coke", "user_id": 2, "cost": 15, "amountAvailable": 16},
+        {"productName": "chocolate", "user_id": 2, "cost": 20, "amountAvailable": 42},
+    ]:
+        click.echo(f"create {product['productName']} user")
+        prod = Product(**product)
+        db.session.add(prod)
     db.session.commit()
     click.echo("created user admin")
