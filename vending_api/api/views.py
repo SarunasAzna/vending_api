@@ -11,7 +11,7 @@ from vending_api.api.resources import (
     UserList,
     UserResource,
 )
-from vending_api.api.schemas import DepositSchema, ProductSchema, UserSchema
+from vending_api.api.schemas import BuySchema, DepositSchema, ProductSchema, UserSchema
 from vending_api.extensions import apispec
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
@@ -36,6 +36,10 @@ def register_views():
     apispec.spec.path(view=ProductResource, app=current_app)
     apispec.spec.path(view=ProductList, app=current_app)
     apispec.spec.components.schema("DepositSchema", schema=DepositSchema)
+    apispec.spec.path(view=DepositResource, app=current_app)
+    apispec.spec.components.schema("BuySchema", schema=BuySchema)
+    apispec.spec.path(view=BuyResource, app=current_app)
+    apispec.spec.path(view=ResetResource, app=current_app)
 
 
 @blueprint.errorhandler(ValidationError)

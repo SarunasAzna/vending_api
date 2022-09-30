@@ -156,11 +156,13 @@ def revoke_access_token():
     return jsonify({"message": "token revoked"}), 200
 
 
-@blueprint.route("/logout/all", methods=["POST"])
+@blueprint.route("/logout/all", methods=["DELETE"])
 @jwt_required()
 def logout_all():
     """Logout All
-    post:
+
+    ---
+    delete:
       tags:
         - auth
       summary: Logout from all sessions(revoke all tokens
@@ -174,8 +176,6 @@ def logout_all():
                   message:
                     type: string
                     example: Logged out from all sessions
-
-    ---
     """
     user_identity = get_jwt_identity()
     revoke_active_tokens(user_identity)

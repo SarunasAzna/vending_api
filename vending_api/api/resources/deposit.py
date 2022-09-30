@@ -8,6 +8,36 @@ from vending_api.models import User
 
 
 class DepositResource(Resource):
+    """Deposit coins
+
+    ---
+    post:
+      tags:
+        - vending
+      summary: Deposit coins
+      description: Deposit 100, 50, 20, 10 or 5 coins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                coin:
+                  type: int
+                  example: 50
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Deposited
+                  user:
+                    UserSchema
+    """
 
     method_decorators = [jwt_required()]
 

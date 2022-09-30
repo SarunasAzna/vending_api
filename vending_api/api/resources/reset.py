@@ -8,6 +8,26 @@ from vending_api.models import User
 
 
 class ResetResource(Resource):
+    """Reset user deposit
+
+    ---
+    post:
+      tags:
+        - vending
+      summary: Reset user deposit
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bought
+                  user:
+                    UserSchema
+    """
 
     method_decorators = [jwt_required()]
 

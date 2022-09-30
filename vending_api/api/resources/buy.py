@@ -8,6 +8,36 @@ from vending_api.models import Product, User
 
 
 class BuyResource(Resource):
+    """Buy product
+
+    ---
+    post:
+      tags:
+        - vending
+      summary: Buy a product
+      description: Buy a product from the product list
+      requestBody:
+        content:
+          application/json:
+            schema:
+              BuySchema
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bought
+                  product:
+                    type: string
+                    example: coke
+                  change:
+                    type: array[number]
+                    example: [50, 50, 5]
+    """
 
     method_decorators = [jwt_required()]
 
@@ -30,7 +60,7 @@ class BuyResource(Resource):
             abort(403, str(e))
         db.session.commit()
         return {
-            "Message": "Bought",
+            "message": "Bought",
             "product": product.productName,
             "change": change,
         }

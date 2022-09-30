@@ -52,7 +52,7 @@ def test_logout_all_tokens(db, seller_user, client, seller_headers):
     ).all()
     assert len(active_tokens) > 0
     # logout from all
-    rep = client.post(
+    rep = client.delete(
         "/auth/logout/all",
         headers=seller_headers,
     )
