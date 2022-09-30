@@ -70,3 +70,10 @@ def revoke_token(token_jti, user):
         db.session.commit()
     except NoResultFound:
         raise Exception("Could not find the token {}".format(token_jti))
+
+
+def revoke_active_tokens(user_id):
+    tokens = get_already_active_tokens(user_id)
+    for token in tokens:
+        token.revoked = True
+    db.session.commit()

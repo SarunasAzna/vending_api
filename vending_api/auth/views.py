@@ -13,6 +13,7 @@ from vending_api.auth.helpers import (
     add_token_to_database,
     get_already_active_tokens,
     is_token_revoked,
+    revoke_active_tokens,
     revoke_token,
 )
 from vending_api.extensions import apispec, jwt, pwd_context
@@ -155,6 +156,32 @@ def revoke_access_token():
     return jsonify({"message": "token revoked"}), 200
 
 
+@blueprint.route("/logout/all", methods=["POST"])
+@jwt_required()
+def logout_all():
+    """Logout All
+    post:
+      tags:
+        - auth
+      summary: Logout from all sessions(revoke all tokens
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logged out from all sessions
+
+    ---
+    """
+    user_identity = get_jwt_identity()
+    revoke_active_tokens(user_identity)
+    return jsonify({"message": "Logged from all sessions"}), 200
+
+
 @blueprint.route("/revoke_refresh", methods=["DELETE"])
 @jwt_required(refresh=True)
 def revoke_refresh_token():
@@ -204,3 +231,4 @@ def register_views():
     apispec.spec.path(view=refresh, app=app)
     apispec.spec.path(view=revoke_access_token, app=app)
     apispec.spec.path(view=revoke_refresh_token, app=app)
+    apispec.spec.path(view=logout_all, app=app)
