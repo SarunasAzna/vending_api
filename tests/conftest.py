@@ -4,7 +4,7 @@ import pytest
 from dotenv import load_dotenv
 from pytest_factoryboy import register
 
-from tests.factories import UserFactory, ProductFactory
+from tests.factories import ProductFactory, UserFactory
 from vending_api.app import create_app
 from vending_api.extensions import db as _db
 from vending_api.models import User

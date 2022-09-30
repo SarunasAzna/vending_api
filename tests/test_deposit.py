@@ -1,5 +1,5 @@
-from flask import url_for
 import pytest
+from flask import url_for
 
 
 @pytest.mark.parametrize("coins", [[5], [10], [20], [100], [5, 100]])

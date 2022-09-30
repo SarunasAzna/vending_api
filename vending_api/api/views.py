@@ -3,15 +3,15 @@ from flask_restful import Api
 from marshmallow import ValidationError
 
 from vending_api.api.resources import (
+    BuyResource,
+    DepositResource,
+    ProductList,
+    ProductResource,
+    ResetResource,
     UserList,
     UserResource,
-    ProductResource,
-    ProductList,
-    DepositResource,
-    ResetResource,
-    BuyResource,
 )
-from vending_api.api.schemas import UserSchema, ProductSchema, DepositSchema
+from vending_api.api.schemas import DepositSchema, ProductSchema, UserSchema
 from vending_api.extensions import apispec
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")

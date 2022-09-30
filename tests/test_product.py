@@ -1,6 +1,7 @@
-from flask import url_for
-from vending_api.models import Product
 import pytest
+from flask import url_for
+
+from vending_api.models import Product
 
 
 def test_get_product(client, db, product, seller_headers, buyer_headers):

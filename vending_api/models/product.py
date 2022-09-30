@@ -1,7 +1,7 @@
 from sqlalchemy.orm import validates
 
 from vending_api.extensions import db
-from vending_api.models.user import ALLOWED_COINS, User, RoleEnum
+from vending_api.models.user import ALLOWED_COINS, RoleEnum, User
 
 
 class Product(db.Model):

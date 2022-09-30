@@ -1,6 +1,6 @@
 import factory
 
-from vending_api.models import User, Product
+from vending_api.models import Product, User
 
 
 class UserFactory(factory.Factory):

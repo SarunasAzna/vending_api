@@ -1,11 +1,10 @@
 from flask import abort, request
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
 
 from vending_api.api.schemas import BuySchema
 from vending_api.extensions import db
-from vending_api.models import User, Product
-from flask_jwt_extended import get_jwt_identity
+from vending_api.models import Product, User
 
 
 class BuyResource(Resource):
