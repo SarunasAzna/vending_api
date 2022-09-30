@@ -4,7 +4,7 @@
 This is an example vending machine api __(coding challenge, not a real vending machine!)__
 
 ### Credits to
-Github user [Karek](https://github.com/karec) for his [Flask API cookiecutter](https://github.com/karec/cookiecutter-flask-restful/blob/master)
+Github user [Karek](https://github.com/karec) for his [Flask API cookiecutter](https://github.com/karec/cookiecutter-flask-restful)
 
 ### Install project requirements
 
