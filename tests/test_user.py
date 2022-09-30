@@ -20,7 +20,6 @@ def test_get_user(client, db, user, seller_headers):
 
     data = rep.get_json()["user"]
     assert data["username"] == user.username
-    assert data["active"] == user.active
     assert data["role"] == "buyer"
 
 
@@ -120,7 +119,7 @@ def test_create_user(client, db, seller_headers):
     rep = client.post(users_url, json=data, headers=seller_headers)
     assert rep.status_code == 400
 
-    data["password"] = "admin"
+    data["password"] = "adminadmin"
     data["role"] = "buyer"
 
     rep = client.post(users_url, json=data, headers=seller_headers)

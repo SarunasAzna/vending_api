@@ -30,6 +30,8 @@ class User(db.Model):
 
     @password.setter
     def password(self, value):
+        if len(value) < 8:
+            raise ValueError("Password must be at least 8 characters long.")
         self._password = pwd_context.hash(value)
 
     def __repr__(self):

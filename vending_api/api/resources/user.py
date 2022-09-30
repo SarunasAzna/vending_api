@@ -1,6 +1,7 @@
 from flask import abort, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
+from sqlalchemy import exc
 
 from vending_api.api.schemas import UserSchema
 from vending_api.commons.pagination import paginate
@@ -101,9 +102,13 @@ class UserResource(Resource):
             abort(400, "deposit cannot be updated with this action")
         if "role" in request.json:
             abort(400, "Role cannot be changed")
-        user = schema.load(request.json, instance=user)
-
-        db.session.commit()
+        try:
+            user = schema.load(request.json, instance=user)
+            db.session.commit()
+        except exc.IntegrityError:
+            abort(400, "Something went wrong, try another username")
+        except ValueError as e:
+            abort(400, str(e))
 
         return {"msg": "user updated", "user": schema.dump(user)}
 
@@ -149,7 +154,20 @@ class UserList(Resource):
         content:
           application/json:
             schema:
-              UserSchema
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: myuser
+                  required: true
+                password:
+                  type: string
+                  example: P4$$w0rd!
+                  required: true
+                role:
+                  type: string
+                  example: buyer
+                  required: true
       responses:
         201:
           content:
@@ -173,9 +191,13 @@ class UserList(Resource):
         schema = UserSchema()
         if "deposit" in request.json:
             abort(400, "deposit cannot be updated with this action")
-        user = schema.load(request.json)
-
-        db.session.add(user)
-        db.session.commit()
+        try:
+            user = schema.load(request.json)
+            db.session.add(user)
+            db.session.commit()
+        except exc.IntegrityError:
+            abort(400, "Something went wrong, try another username")
+        except ValueError as e:
+            abort(400, str(e))
 
         return {"msg": "user created", "user": schema.dump(user)}, 201

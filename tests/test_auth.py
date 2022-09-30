@@ -19,8 +19,8 @@ def test_revoke_refresh_token(client, seller_refresh_headers):
     assert resp.status_code == 401
 
 
-def test_already_an_active_session(seller_user, client):
-    data = {"username": seller_user.username, "password": "seller"}
+def test_already_an_active_session(seller_user, client, seller_password):
+    data = {"username": seller_user.username, "password": seller_password}
     for _ in range(2):
         rep = client.post(
             "/auth/login",

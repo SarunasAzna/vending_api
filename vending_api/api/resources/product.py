@@ -28,10 +28,9 @@ def _validate_user_is_seller():
 
 def _load_product(schema, *args, **kwargs):
     try:
-        product = schema.load(*args, **kwargs)
+        return schema.load(*args, **kwargs)
     except ValueError as e:
         abort(400, str(e))
-    return product
 
 
 class ProductResource(Resource):
@@ -40,7 +39,7 @@ class ProductResource(Resource):
     ---
     get:
       tags:
-        - api
+        - product
       summary: Get a product
       description: Get a single product by ID
       parameters:
@@ -60,7 +59,7 @@ class ProductResource(Resource):
           description: product does not exists
     put:
       tags:
-        - api
+        - product
       summary: Update a product
       description: Update a single product by ID
       parameters:
@@ -88,7 +87,7 @@ class ProductResource(Resource):
           description: product does not exists
     delete:
       tags:
-        - api
+        - product
       summary: Delete a product
       description: Delete a single product by ID
       parameters:
@@ -144,7 +143,7 @@ class ProductList(Resource):
     ---
     get:
       tags:
-        - api
+        - product
       summary: Get a list of products
       description: Get a list of paginated products
       responses:
@@ -162,7 +161,7 @@ class ProductList(Resource):
                           $ref: '#/components/schemas/ProductSchema'
     post:
       tags:
-        - api
+        - product
       summary: Create a product
       description: Create a new product
       requestBody:

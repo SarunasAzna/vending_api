@@ -10,7 +10,7 @@ def init():
     from vending_api.models import User
 
     click.echo("create user")
-    user = User(username="admin", password="admin", active=True, role="seller")
+    user = User(username="admin", password="adminadmin", active=True, role="seller")
     db.session.add(user)
     db.session.commit()
     click.echo("created user admin")

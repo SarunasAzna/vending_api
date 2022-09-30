@@ -13,6 +13,16 @@ register(UserFactory)
 register(ProductFactory)
 
 
+@pytest.fixture
+def seller_password():
+    return "seller12345"
+
+
+@pytest.fixture
+def buyer_password():
+    return "buyer12345"
+
+
 @pytest.fixture(scope="session")
 def app():
     load_dotenv(".testenv")
@@ -34,8 +44,8 @@ def db(app):
 
 
 @pytest.fixture
-def seller_user(db):
-    user = User(username="seller", password="seller", role="seller")
+def seller_user(db, seller_password):
+    user = User(username="seller", password=seller_password, role="seller")
 
     db.session.add(user)
     db.session.commit()
@@ -44,8 +54,8 @@ def seller_user(db):
 
 
 @pytest.fixture
-def buyer_user(db):
-    user = User(username="buyer", password="buyer", role="buyer")
+def buyer_user(db, buyer_password):
+    user = User(username="buyer", password=buyer_password, role="buyer")
 
     db.session.add(user)
     db.session.commit()
@@ -54,8 +64,8 @@ def buyer_user(db):
 
 
 @pytest.fixture
-def seller_headers(seller_user, client):
-    data = {"username": seller_user.username, "password": "seller"}
+def seller_headers(seller_user, client, seller_password):
+    data = {"username": seller_user.username, "password": seller_password}
     rep = client.post(
         "/auth/login",
         data=json.dumps(data),
@@ -70,8 +80,8 @@ def seller_headers(seller_user, client):
 
 
 @pytest.fixture
-def buyer_headers(buyer_user, client):
-    data = {"username": buyer_user.username, "password": "buyer"}
+def buyer_headers(buyer_user, client, buyer_password):
+    data = {"username": buyer_user.username, "password": buyer_password}
     rep = client.post(
         "/auth/login",
         data=json.dumps(data),
@@ -87,7 +97,7 @@ def buyer_headers(buyer_user, client):
 
 @pytest.fixture
 def seller_refresh_headers(seller_user, client):
-    data = {"username": seller_user.username, "password": "seller"}
+    data = {"username": seller_user.username, "password": "seller12345"}
     rep = client.post(
         "/auth/login",
         data=json.dumps(data),

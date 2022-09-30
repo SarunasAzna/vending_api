@@ -6,7 +6,7 @@ from vending_api.models import Product, User
 class UserFactory(factory.Factory):
 
     username = factory.Sequence(lambda n: "user%d" % n)
-    password = "mypwd"
+    password = "mypwd12345"
     role = "buyer"
 
     class Meta:
