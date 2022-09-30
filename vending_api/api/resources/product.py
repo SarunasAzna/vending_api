@@ -14,16 +14,17 @@ def _validate_user_is_owner(product):
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
     if user.id != product.user_id:
-        abort(403,
-              description=f"User '{user.username}' is not an owner of product '{product.productName}'")
+        abort(
+            403,
+            description=f"User '{user.username}' is not an owner of product '{product.productName}'",
+        )
 
 
 def _validate_user_is_seller():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
     if user.role != RoleEnum.seller:
-        abort(403,
-              description="User bust be a seller to be able to edit products")
+        abort(403, description="User bust be a seller to be able to edit products")
 
 
 def _load_product(schema, *args, **kwargs):
@@ -117,7 +118,6 @@ class ProductResource(Resource):
         product = Product.query.get_or_404(product_id)
         return {"product": schema.dump(product)}
 
-
     def put(self, product_id):
         _validate_user_is_seller()
         product = Product.query.get_or_404(product_id)
@@ -183,6 +183,7 @@ class ProductList(Resource):
                     example: product created
                   product: ProductSchema
     """
+
     method_decorators = [jwt_required()]
 
     def get(self):

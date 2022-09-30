@@ -1,5 +1,6 @@
 from flask import url_for
 
+
 def test_reset(client, db, buyer_user, buyer_headers):
     user_url = url_for("api.reset")
     buyer_user.deposit_coin(100)
@@ -10,7 +11,7 @@ def test_reset(client, db, buyer_user, buyer_headers):
     assert buyer_user.deposit == 0
 
 
-def test_reset_only_buyer( client, db, seller_headers):
+def test_reset_only_buyer(client, db, seller_headers):
     user_url = url_for("api.reset")
     rep = client.post(user_url, headers=seller_headers)
     assert rep.status_code == 403

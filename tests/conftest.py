@@ -68,6 +68,7 @@ def seller_headers(seller_user, client):
         "authorization": "Bearer %s" % tokens["access_token"],
     }
 
+
 @pytest.fixture
 def buyer_headers(buyer_user, client):
     data = {"username": buyer_user.username, "password": "buyer"}

@@ -2,7 +2,9 @@ from flask import url_for
 import pytest
 
 
-def test_buy(client, db, buyer_user, buyer_headers, seller_user, product, seller_headers):
+def test_buy(
+    client, db, buyer_user, buyer_headers, seller_user, product, seller_headers
+):
     user_url = url_for("api.buy")
     buyer_user.deposit_coin(100)
     seller_user.deposit = 0
@@ -36,12 +38,27 @@ def test_buy(client, db, buyer_user, buyer_headers, seller_user, product, seller
     assert seller_user.deposit == amount_to_buy * cost
 
 
-@pytest.mark.parametrize("amount_available, deposit, amount_to_buy, product_cost, expected_in_error", [
-    [0, 100, 2, 10, "Not enough products"],
-    [4, 100, 5, 10, "Not enough products"],
-    [10, 10, 1, 20, "Not enough deposit"],
-])
-def test_buy_error(amount_available, deposit, amount_to_buy, product_cost, expected_in_error, client, db, buyer_user, buyer_headers, seller_user, product):
+@pytest.mark.parametrize(
+    "amount_available, deposit, amount_to_buy, product_cost, expected_in_error",
+    [
+        [0, 100, 2, 10, "Not enough products"],
+        [4, 100, 5, 10, "Not enough products"],
+        [10, 10, 1, 20, "Not enough deposit"],
+    ],
+)
+def test_buy_error(
+    amount_available,
+    deposit,
+    amount_to_buy,
+    product_cost,
+    expected_in_error,
+    client,
+    db,
+    buyer_user,
+    buyer_headers,
+    seller_user,
+    product,
+):
     url = url_for("api.buy")
     buyer_user.reset()
     buyer_user.deposit_coin(deposit)
@@ -65,5 +82,3 @@ def test_buy_error(amount_available, deposit, amount_to_buy, product_cost, expec
     assert product.amountAvailable == amount_available
     assert expected_in_error in rep.json["message"]
     assert buyer_user.deposit == deposit
-
-

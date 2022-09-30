@@ -2,6 +2,7 @@ from flask import url_for
 from vending_api.models import Product
 import pytest
 
+
 def test_get_product(client, db, product, seller_headers, buyer_headers):
     # test 404
     product_url = url_for("api.product_by_id", product_id="1")
@@ -79,25 +80,42 @@ def test_create_product(client, db, seller_headers):
 
     assert product.productName == "sup"
 
-@pytest.mark.parametrize("cost, amount_available, explanation", [
-    [0, 10, "cost is zero"],
-    [-5, 10, "cost is negative"],
-    [6, 10, "cost is non multiple by 5"],
-    [5, -1, "amountAvailable is negative"],
-])
-def test_create_bad_amounts(cost, amount_available, explanation, client, db, seller_headers):
+
+@pytest.mark.parametrize(
+    "cost, amount_available, explanation",
+    [
+        [0, 10, "cost is zero"],
+        [-5, 10, "cost is negative"],
+        [6, 10, "cost is non multiple by 5"],
+        [5, -1, "amountAvailable is negative"],
+    ],
+)
+def test_create_bad_amounts(
+    cost, amount_available, explanation, client, db, seller_headers
+):
     products_url = url_for("api.product")
-    data = {"productName": f"{cost}{amount_available}", "cost": cost, "amountAvailable": amount_available}
+    data = {
+        "productName": f"{cost}{amount_available}",
+        "cost": cost,
+        "amountAvailable": amount_available,
+    }
     rep = client.post(products_url, json=data, headers=seller_headers)
-    assert rep.status_code == 400, f"Bad response code: {rep.status_code} on case: {explanation}"
+    assert (
+        rep.status_code == 400
+    ), f"Bad response code: {rep.status_code} on case: {explanation}"
 
 
-@pytest.mark.parametrize("url, method, validate_owner", [
-    ["api.product_by_id", "put", True],
-    ["api.product_by_id", "delete", True],
-    ["api.product", "post", False],
-])
-def test_not_owner(url, method, validate_owner, client, db, product, seller_headers, buyer_headers):
+@pytest.mark.parametrize(
+    "url, method, validate_owner",
+    [
+        ["api.product_by_id", "put", True],
+        ["api.product_by_id", "delete", True],
+        ["api.product", "post", False],
+    ],
+)
+def test_not_owner(
+    url, method, validate_owner, client, db, product, seller_headers, buyer_headers
+):
     db.session.add(product)
     db.session.commit()
     # test 401
@@ -116,6 +134,7 @@ def test_not_owner(url, method, validate_owner, client, db, product, seller_head
         rep = getattr(client, method)(product_url, headers=seller_headers)
         assert rep.status_code == 403
 
+
 def test_get_all_product(client, db, product_factory, seller_headers):
     products_url = url_for("api.product")
     products = product_factory.create_batch(30)
@@ -129,4 +148,3 @@ def test_get_all_product(client, db, product_factory, seller_headers):
     results = rep.get_json()
     for product in products:
         assert any(u["id"] == product.id for u in results["results"])
-

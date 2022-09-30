@@ -52,18 +52,24 @@ def test_no_deposit_on_user_edit(client, db, user, seller_headers):
     db.session.add(user)
     db.session.commit()
 
-    data = {"username": "updated", "password": "new_password", "deposit": 100, "role": "buyer"}
+    data = {
+        "username": "updated",
+        "password": "new_password",
+        "deposit": 100,
+        "role": "buyer",
+    }
 
     user_url = url_for("api.user_by_id", user_id=user.id)
     # test update user
     rep = client.put(user_url, json=data, headers=seller_headers)
     assert rep.status_code == 400
-    assert rep.json["message"] == 'deposit cannot be updated with this action'
+    assert rep.json["message"] == "deposit cannot be updated with this action"
     # test create user
     user_url = url_for("api.user")
     rep = client.post(user_url, json=data, headers=seller_headers)
     assert rep.status_code == 400
-    assert rep.json["message"] == 'deposit cannot be updated with this action'
+    assert rep.json["message"] == "deposit cannot be updated with this action"
+
 
 def test_no_role_on_user_edit(client, db, user, seller_headers):
     db.session.add(user)
@@ -75,7 +81,8 @@ def test_no_role_on_user_edit(client, db, user, seller_headers):
     # test update user
     rep = client.put(user_url, json=data, headers=seller_headers)
     assert rep.status_code == 400
-    assert rep.json["message"] == 'Role cannot be changed'
+    assert rep.json["message"] == "Role cannot be changed"
+
 
 def test_delete_user(client, db, user, seller_headers):
     # test 404

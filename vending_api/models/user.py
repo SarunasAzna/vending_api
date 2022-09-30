@@ -13,6 +13,7 @@ class RoleEnum(enum.Enum):
 
 ALLOWED_COINS = [5, 10, 20, 50, 100]
 
+
 class User(db.Model):
     """Basic user model"""
 
@@ -53,4 +54,3 @@ class User(db.Model):
         if self.role != RoleEnum.buyer:
             raise PermissionError("Only buyer can deposit coins")
         self.deposit = 0
-

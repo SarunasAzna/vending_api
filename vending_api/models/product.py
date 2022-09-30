@@ -36,10 +36,14 @@ class Product(db.Model):
         if buyer.role == RoleEnum.seller:
             raise PermissionError("Role of the buying user must be buyer")
         if amount > self.amountAvailable:
-            raise ValueError(f"Not enough products. Requested: {amount}, available: {self.amountAvailable}")
+            raise ValueError(
+                f"Not enough products. Requested: {amount}, available: {self.amountAvailable}"
+            )
         total_cost = self.cost * amount
         if total_cost > buyer.deposit:
-            raise ValueError(f"Not enough deposit. Please add at least {total_cost - buyer.deposit} to acquire the products.")
+            raise ValueError(
+                f"Not enough deposit. Please add at least {total_cost - buyer.deposit} to acquire the products."
+            )
         self.amountAvailable -= amount
         change_amount = buyer.deposit - total_cost
         buyer.deposit = 0
@@ -53,10 +57,8 @@ class Product(db.Model):
         change = []
         for coin in ALLOWED_COINS:
             coint_amount = change_amount // coin
-            change.extend([coin]*coint_amount)
+            change.extend([coin] * coint_amount)
             change_amount -= coin * coint_amount
             if change_amount <= 0:
                 break
         return change
-
-
