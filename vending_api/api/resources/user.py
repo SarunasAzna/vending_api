@@ -1,5 +1,5 @@
 from flask import abort, request
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
 
 from vending_api.api.schemas import UserSchema
@@ -94,6 +94,9 @@ class UserResource(Resource):
     def put(self, user_id):
         schema = UserSchema(partial=True)
         user = User.query.get_or_404(user_id)
+        self_id = get_jwt_identity()
+        if self_id != user_id:
+            abort(403, "You can change only your user data.")
         if "deposit" in request.json:
             abort(400, "deposit cannot be updated with this action")
         if "role" in request.json:
@@ -106,6 +109,9 @@ class UserResource(Resource):
 
     def delete(self, user_id):
         user = User.query.get_or_404(user_id)
+        self_id = get_jwt_identity()
+        if self_id != user_id:
+            abort(403, "You can delete only yourself.")
         db.session.delete(user)
         db.session.commit()
 

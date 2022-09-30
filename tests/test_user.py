@@ -24,7 +24,7 @@ def test_get_user(client, db, user, seller_headers):
     assert data["role"] == "buyer"
 
 
-def test_put_user(client, db, user, seller_headers):
+def test_put_user(client, db, user, seller_user, seller_headers):
     # test 404
     user_url = url_for("api.user_by_id", user_id="100000")
     rep = client.put(user_url, headers=seller_headers)
@@ -36,22 +36,22 @@ def test_put_user(client, db, user, seller_headers):
     data = {"username": "updated", "password": "new_password"}
 
     user_url = url_for("api.user_by_id", user_id=user.id)
+    # cannot change not self
+    rep = client.put(user_url, json=data, headers=seller_headers)
+    assert rep.status_code == 403
     # test update user
+    user_url = url_for("api.user_by_id", user_id=seller_user.id)
     rep = client.put(user_url, json=data, headers=seller_headers)
     assert rep.status_code == 200
 
     data = rep.get_json()["user"]
     assert data["username"] == "updated"
-    assert data["active"] == user.active
 
-    db.session.refresh(user)
-    assert pwd_context.verify("new_password", user.password)
+    db.session.refresh(seller_user)
+    assert pwd_context.verify("new_password", seller_user.password)
 
 
-def test_no_deposit_on_user_edit(client, db, user, seller_headers):
-    db.session.add(user)
-    db.session.commit()
-
+def test_no_deposit_on_user_edit(client, db, seller_user, seller_headers):
     data = {
         "username": "updated",
         "password": "new_password",
@@ -59,7 +59,7 @@ def test_no_deposit_on_user_edit(client, db, user, seller_headers):
         "role": "buyer",
     }
 
-    user_url = url_for("api.user_by_id", user_id=user.id)
+    user_url = url_for("api.user_by_id", user_id=seller_user.id)
     # test update user
     rep = client.put(user_url, json=data, headers=seller_headers)
     assert rep.status_code == 400
@@ -71,20 +71,17 @@ def test_no_deposit_on_user_edit(client, db, user, seller_headers):
     assert rep.json["message"] == "deposit cannot be updated with this action"
 
 
-def test_no_role_on_user_edit(client, db, user, seller_headers):
-    db.session.add(user)
-    db.session.commit()
-
+def test_no_role_on_user_edit(client, db, seller_user, seller_headers):
     data = {"username": "updated", "password": "new_password", "role": "buyer"}
 
-    user_url = url_for("api.user_by_id", user_id=user.id)
+    user_url = url_for("api.user_by_id", user_id=seller_user.id)
     # test update user
     rep = client.put(user_url, json=data, headers=seller_headers)
     assert rep.status_code == 400
     assert rep.json["message"] == "Role cannot be changed"
 
 
-def test_delete_user(client, db, user, seller_headers):
+def test_delete_user(client, db, user, seller_headers, seller_user):
     # test 404
     user_url = url_for("api.user_by_id", user_id="100000")
     rep = client.delete(user_url, headers=seller_headers)
@@ -93,12 +90,16 @@ def test_delete_user(client, db, user, seller_headers):
     db.session.add(user)
     db.session.commit()
 
-    # test get_user
-
+    # delete not yourself
     user_url = url_for("api.user_by_id", user_id=user.id)
     rep = client.delete(user_url, headers=seller_headers)
+    assert rep.status_code == 403
+    # test get_user
+
+    user_url = url_for("api.user_by_id", user_id=seller_user.id)
+    rep = client.delete(user_url, headers=seller_headers)
     assert rep.status_code == 200
-    assert db.session.query(User).filter_by(id=user.id).first() is None
+    assert db.session.query(User).filter_by(id=seller_user.id).first() is None
 
 
 def test_allow_unauthenticated_user_creation(client, db):
