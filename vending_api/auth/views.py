@@ -11,6 +11,7 @@ from flask_jwt_extended import (
 
 from vending_api.auth.helpers import (
     add_token_to_database,
+    get_already_active_tokens,
     is_token_revoked,
     revoke_token,
 )
@@ -72,13 +73,20 @@ def login():
     user = User.query.filter_by(username=username).first()
     if user is None or not pwd_context.verify(password, user.password):
         return jsonify({"msg": "Bad credentials"}), 400
-
+    active_tokens = get_already_active_tokens(user.id)
+    message = "OK"
+    if active_tokens:
+        message = "There is already an active session using your account"
     access_token = create_access_token(identity=user.id)
     refresh_token = create_refresh_token(identity=user.id)
     add_token_to_database(access_token, app.config["JWT_IDENTITY_CLAIM"])
     add_token_to_database(refresh_token, app.config["JWT_IDENTITY_CLAIM"])
 
-    ret = {"access_token": access_token, "refresh_token": refresh_token}
+    ret = {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "message": message,
+    }
     return jsonify(ret), 200
 
 

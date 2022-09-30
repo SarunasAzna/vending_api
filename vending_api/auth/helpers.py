@@ -12,6 +12,13 @@ from vending_api.extensions import db
 from vending_api.models import TokenBlocklist
 
 
+def get_already_active_tokens(user_id):
+    """
+    Gets already active tokens
+    """
+    return TokenBlocklist.query.filter_by(user_id=user_id, revoked=False).all()
+
+
 def add_token_to_database(encoded_token, identity_claim):
     """
     Adds a new token to the database. It is not revoked when it is added.
