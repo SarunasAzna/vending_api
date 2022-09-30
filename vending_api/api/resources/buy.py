@@ -23,7 +23,12 @@ class BuyResource(Resource):
             abort(400, msg)
         product = Product.query.get_or_404(payload["productId"])
         amount = payload["amount"]
-        change = product.buy(amount, buyer)
+        try:
+            change = product.buy(amount, buyer)
+        except ValueError as e:
+            abort(400, str(e))
+        except PermissionError as e:
+            abort(403, str(e))
         db.session.commit()
         return {
             "Message": "Bought",
