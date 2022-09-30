@@ -4,7 +4,7 @@
 This is an example vending machine api __(coding challenge, not a real vending machine!)__
 
 ### Credits to
-Github user [Karek](https://github.com/karec) [cookiecutter for Flask API](https://github.com/karec/cookiecutter-flask-restful/blob/master/README.md)
+Github user [Karek](https://github.com/karec) for his [Flask API cookiecutter](https://github.com/karec/cookiecutter-flask-restful/blob/master/README.md)
 
 ### Install project requirements
 
@@ -21,7 +21,7 @@ Initiate the app:
 flask db init
 flask db migrate
 flask db upgrade
-flask init  # creates admin user
+flask init  # creates buyer, seller users and some products
 ```
 
 Run the app:
